@@ -48,13 +48,7 @@ function GetControls(props)
             ButtonType = "Toggle",
             Count = 3
         },
-        {
-            Name = "PlaybackBtn",
-            ControlType = "Button",
-            ButtonType = "Toggle",
-            Count = 1w
-        },
-
+        
     }
     return ctls
 end
@@ -73,6 +67,7 @@ function GetControlLayout(props)
         ButtonStyle = "Toggle",
         Size = ButtonSize,
         Position = {x + ButtonSize[1],y},
+        Legend = "Record Stop"
     }
 
     for z=1,3 do
@@ -80,7 +75,8 @@ function GetControlLayout(props)
             Style = "Button",
             ButtonStyle = "Toggle",
             Size = ButtonSize,
-            Position = {(z-1)*ButtonSize[1] + x + ButtonSize[1], y + ButtonSize[2]}
+            Position = {(z-1)*ButtonSize[1] + x + ButtonSize[1], y + ButtonSize[2]},
+            Legend = "Stream "..z
         }
     end
     
@@ -97,12 +93,7 @@ function GetControlLayout(props)
             Position = {x,y + ButtonSize[2]},
             Text = "Stream"
         },
-        {
-            Type = "Label",
-            Size = ButtonSize,
-            Position = {x,y + 2*ButtonSize[2]},
-            Text = "Playback"
-        },
+        
     }
 
     return layout, graphics;
@@ -152,9 +143,12 @@ if Controls then
         if Controls["RecordBtn"].Boolean == true then
             CommandString = Header..'\x04'..DevAddress..SetAction..RecordStart..Terminator
             SendCommand(CommandString)
+            Controls["RecordBtn"].Legend = "Recording in progress."
+            
         else
             CommandString = Header..'\x04'..DevAddress..SetAction..RecordStop..Terminator
             SendCommand(CommandString)
+            Controls["RecordBtn"].Legend = "Start recording"
         end
     end
 
@@ -171,7 +165,7 @@ if Controls then
     end
 
     sock.Data = function(sock)
-        Incoming = sock.ReadLine(TcpSocket.EOL.Custom, '\x0d')
+        Incoming = sock:ReadLine(TcpSocket.EOL.Custom, "\x0d")
         print(Incoming)
     end
 end
