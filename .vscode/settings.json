@@ -3,6 +3,7 @@
         "sock",
         "Controls",
         "Timer",
-        "TcpSocket"
+        "TcpSocket",
+        "props"
     ]
 }
